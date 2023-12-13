@@ -1,61 +1,39 @@
 #include <iostream>
-#include <string>
-#include <fstream>
 #include <vector>
+#include <map>
+#include <string>
+#include <regex>
+#include <fstream>
 
 using namespace std;
 
-size_t get_first_position(string password, string searches[2])
+vector<string> custom_split(string str, string tokenizer, int spacing)
 {
-    size_t first_pos = string::npos;
+    vector<string> split_strings;
 
-    for (int i = 0; i <= searches->length(); i++)
+    int start_index = 0;
+    size_t last_index = 0;
+
+    while (last_index != string::npos)
     {
-        string Search = searches[i];
-        size_t pos = password.find(Search);
+        last_index = str.find(tokenizer, start_index);
+        string round_results = str.substr(start_index, last_index - start_index);
+        split_strings.push_back(round_results);
 
-        if (pos < first_pos || first_pos == string::npos)
-        {
-            first_pos = pos;
-        }
+        start_index = last_index + spacing;
     }
 
-    return first_pos;
-}
-
-size_t get_last_position(string password, string searches[2])
-{
-    // This is necessary as there might be duplicates of the same letter / number
-    // in the same string. If we simply used .find(), it would only
-    // find the first value.
-
-    size_t last_pos = string::npos;
-
-    for (int i = 0; i <= searches->length(); i++)
-    {
-        string Search = searches[i];
-        size_t pos = password.find(Search);
-
-        while (pos != string::npos)
-        {
-            if (pos > last_pos || last_pos == string::npos)
-            {
-                last_pos = pos;
-            }
-            
-            pos = password.find(Search, pos+1);
-        }
-    }
-    
-    return last_pos;
+    return split_strings;
 }
 
 int main() 
 {
-    const string numbers = "1234567890";
-    const string corresponding_strings[9] = {"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"};
+    map<string, int> max_values;
+    max_values["red"] = 12;
+    max_values["green"] = 13;
+    max_values["blue"] = 14;
 
-    int sum = 0;
+    int index_sum = 0;
     string line;
 
     ifstream file("Day2Input.txt");
@@ -64,38 +42,44 @@ int main()
     {
         while (getline(file, line))
         {
-            int first_index = 10000;
-            int first_index_number;
+            bool is_legal = true;
 
-            int last_index = 0;
-            int last_index_number;
+            size_t column_index = line.find(":");
+            string game_results = line.substr(column_index + 2);
 
-            for (int index = 1; index < 10; index++)
+            vector<string> rounds = custom_split(game_results, ";", 2);
+
+            for (int i = 0; i < rounds.size(); i++)
             {
-                string number_string = to_string(index);
-                string number_spelling = corresponding_strings[index - 1];
+                string round = rounds[i];
 
-                string searches[2] = {number_string, number_spelling};
-                size_t first_number_index = get_first_position(line, searches);
-                size_t last_number_index = get_last_position(line, searches);
+                vector<string> throws = custom_split(round, ",", 2);
 
-                if (first_number_index != string::npos && first_number_index < first_index)
+                for (int j = 0; j < throws.size(); j++)
                 {
-                    first_index = first_number_index;
-                    first_index_number = index;
-                }
+                    vector<string> properties = custom_split(throws[j], " ", 1);
+                    int amount = stoi(properties[0]);
+                    string colour = properties[1];
 
-                if (last_number_index != string::npos && last_number_index >= last_index)
-                {
-                    last_index = last_number_index;
-                    last_index_number = index;
+                    map<string, int>::iterator max_value = max_values.find(colour);
+
+                    if (amount > max_value->second)
+                    {
+                        is_legal = false;
+                    }
                 }
             }
 
-            string combination = to_string(first_index_number) + to_string(last_index_number);
-            sum += stoi(combination);
+            if (is_legal)
+            {
+                string game_info = line.substr(0, column_index);
+                int game_index = stoi(regex_replace(game_info, regex("[^0-9]*([0-9]+).*"), "$1"));
+                index_sum += game_index;
+            }
         }
-    }
 
-    cout<<sum<<endl;     
+        file.close();
+    }    
+
+    std::cout<<index_sum<<endl;
 }
