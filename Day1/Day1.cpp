@@ -13,8 +13,10 @@ int main()
 
     ifstream file("Day1Input.txt");
 
-    if (file.is_open()) {
-        while(getline(file, line)) {
+    if (file.is_open()) 
+    {
+        while(getline(file, line)) 
+        {
             size_t first = line.find_first_of(numbers);
             size_t last = line.find_last_of(numbers);
 
