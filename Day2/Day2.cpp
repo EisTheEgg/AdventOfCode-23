@@ -44,8 +44,8 @@ int main()
         {
             bool is_legal = true;
 
-            size_t column_index = line.find(":");
-            string game_results = line.substr(column_index + 2);
+            size_t colon_index = line.find(":");
+            string game_results = line.substr(colon_index + 2);
 
             vector<string> rounds = custom_split(game_results, ";", 2);
 
@@ -72,7 +72,7 @@ int main()
 
             if (is_legal)
             {
-                string game_info = line.substr(0, column_index);
+                string game_info = line.substr(0, colon_index);
                 int game_index = stoi(regex_replace(game_info, regex("[^0-9]*([0-9]+).*"), "$1"));
                 index_sum += game_index;
             }
