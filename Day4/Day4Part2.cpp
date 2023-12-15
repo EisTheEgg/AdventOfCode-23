@@ -2,7 +2,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <regex>
 #include <fstream>
 #include <boost/algorithm/string.hpp>
 #include <algorithm>
