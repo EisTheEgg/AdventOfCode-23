@@ -55,8 +55,6 @@ int main()
 
             current_node = network.at(next_node_index);
             steps++;
-
-            if (next_node_index == "ZZZ") { break; }
         }
     }
 
