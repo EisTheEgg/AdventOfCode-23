@@ -16,7 +16,7 @@ private:
     int get_max()
     {
         int current_max = 0;
-        
+
         for (map<char, int>::iterator it = hand_card_amounts.begin(); it != hand_card_amounts.end(); it++)
         {
             current_max = max(current_max, it->second);
@@ -35,30 +35,6 @@ private:
         }
 
         return current_min; 
-    }
-
-    bool is_fioak()
-    {
-        // is five of a kind
-        return hand_card_amounts.begin()->second == 5;
-    }
-
-    bool is_fooak()
-    {
-        // is four of a kind
-        return get_max() == 4;
-    }
-
-    bool is_fh()
-    {
-        // is full house
-        return (get_max() == 3 && get_min() == 2);        
-    }
-
-    bool is_toak()
-    {
-        // is three of a kind
-        return get_max() == 3;
     }
 
     int get_pair_amount()
@@ -84,10 +60,10 @@ private:
         }
 
         // first ordering
-        if (is_fioak()) { value = 6; }
-        else if (is_fooak()) { value = 5; }
-        else if (is_fh()) { value = 4; }
-        else if (is_toak()) { value = 3; }
+        if (hand_card_amounts.begin()->second == 5) { value = 6; }
+        else if (get_max() == 4) { value = 5; }
+        else if (get_max() == 3 && get_min() == 2) { value = 4; }
+        else if (get_max() == 3) { value = 3; }
         else { value = get_pair_amount(); }
     }
 
